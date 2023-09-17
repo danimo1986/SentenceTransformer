@@ -15,10 +15,7 @@ if uploaded_file is not None:
 
     # テキストをベクトル化
     corpus_list = df[column_name].to_list()
-    corpus_embeddings = model.encode(corpus_list, convert_to_tensor=True)  # ここで定義
-
-    # プログレスバーを初期化
-    progress_bar = st.progress(0)
+    corpus_embeddings = model.encode(corpus_list, convert_to_tensor=True)
 
     # キーワード入力
     keywords = st.text_input("キーワードを入力してください（複数のキーワードはスペースで区切ってください）")
@@ -37,18 +34,7 @@ if uploaded_file is not None:
         st.write("Keyword:", keywords, "のAnd検索")
 
         top_k = min(number_of_texts_shown, len(corpus_list))
-        
-        # top_resultsを定義
         top_results = torch.topk(cos_scores, k=top_k)
-        
-        # 進捗バーを表示
-        progress_bar_results = st.progress(0)
 
-        for i, idx in enumerate(top_results[1]):  # 修正: インデックスを正しく使用
-            score = cos_scores[idx]
+        for score, idx in zip(top_results[0], top_results[1]):
             st.write('✓', corpus_list[idx], "(Cosine Similarity: {:.3f})".format(score))
-            # バッチごとに進捗バーを更新
-            progress = (i + 1) / top_k
-            progress_bar_results.progress(progress)
-
-
