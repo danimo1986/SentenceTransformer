@@ -22,11 +22,11 @@ if uploaded_file is not None:
 
     if keywords:
         keywords = keywords.split()
-        keyword_sum = '|'.join(keywords)
+        keyword_sum = ' '.join(keywords)  # '|' から ' ' に修正
         keyword_sum_embedding = model.encode(keyword_sum, convert_to_tensor=True)
 
         # コサイン類似度を計算
-        cos_scores = util.cos_sim(keyword_sum_embedding, corpus_embeddings)[0]
+        cos_scores = util.pytorch_cos_sim(keyword_sum_embedding, corpus_embeddings)[0]  # util.cos_sim から util.pytorch_cos_sim に修正
         number_of_texts_shown = st.slider("表示するテキストの数", min_value=3, max_value=10, step=1, value=5)
 
         # 検索結果を表示
