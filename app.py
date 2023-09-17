@@ -14,7 +14,7 @@ if uploaded_file is not None:
     model = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
 
     # テキストをベクトル化
-    corpus_list = df[column_name].to_list()
+    corpus_list = df[column_name].astype(str).to_list()  # テキストデータを文字列に変換
     corpus_embeddings = model.encode(corpus_list, convert_to_tensor=True)
 
     # キーワード入力
@@ -22,11 +22,11 @@ if uploaded_file is not None:
 
     if keywords:
         keywords = keywords.split()
-        keyword_sum = ' '.join(keywords)  # '|' から ' ' に修正
+        keyword_sum = ' '.join(keywords)
         keyword_sum_embedding = model.encode(keyword_sum, convert_to_tensor=True)
 
         # コサイン類似度を計算
-        cos_scores = util.pytorch_cos_sim(keyword_sum_embedding, corpus_embeddings)[0]  # util.cos_sim から util.pytorch_cos_sim に修正
+        cos_scores = util.pytorch_cos_sim(keyword_sum_embedding, corpus_embeddings)[0]
         number_of_texts_shown = st.slider("表示するテキストの数", min_value=3, max_value=10, step=1, value=5)
 
         # 検索結果を表示
